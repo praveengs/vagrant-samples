@@ -1,0 +1,44 @@
+
+Vagrant.configure(2) do |config|
+
+  config.vm.provider "virtualbox" do |v|
+        v.memory = 512
+        v.cpus = 1
+  end
+  
+  config.vm.define "masterzk1" do |zk1_config|
+     zk1_config.vm.box = "ubuntu/trusty64-juju"
+     zk1_config.vm.host_name = 'masterzk1'.to_s
+     zk1_config.vm.network "public_network", ip:'192.168.1.44'               
+     zk1_config.vm.network "forwarded_port", guest: 22, host: 2222, id:"ssh", disable:true
+     zk1_config.vm.network "forwarded_port", guest: 22, host: 2122, id:"tcp2122", disable:true
+     zk1_config.vm.network "forwarded_port", guest: 6079, host: 6079, id:"tcp6079", disable:true
+     zk1_config.vm.network "forwarded_port", guest: 80, host: 6080, id:"tcp6080", disable:true
+     zk1_config.vm.network "forwarded_port", guest: 22, host: 2345, id:"ssh", auto_correct: true
+     zk1_config.vm.network "forwarded_port", guest: 22, host: 2122, id:"tcp2122", auto_correct:true
+  end
+  
+  config.vm.define "masterzk2" do |zk2_config|
+     zk2_config.vm.box = "ubuntu/trusty64-juju"
+     zk2_config.vm.host_name = 'masterzk2'.to_s
+     zk2_config.vm.network "public_network", ip:'192.168.1.45'               
+     zk2_config.vm.network "forwarded_port", guest: 22, host: 2222, id:"ssh", disable:true
+     zk2_config.vm.network "forwarded_port", guest: 22, host: 2122, id:"tcp2122", disable:true
+     zk2_config.vm.network "forwarded_port", guest: 22, host: 2346, id:"ssh", auto_correct: true
+     zk2_config.vm.network "forwarded_port", guest: 22, host: 2123, id:"tcp2122", auto_correct: true
+     zk2_config.vm.network "forwarded_port", guest: 6079, host: 6081, id:"tcp6079", auto_correct: true
+     zk2_config.vm.network "forwarded_port", guest: 80, host: 6082, id:"tcp6080", auto_correct: true
+   end
+   
+  config.vm.define "masterzk3" do |zk3_config|
+     zk3_config.vm.box = "ubuntu/trusty64-juju"
+     zk3_config.vm.host_name = 'masterzk3'.to_s
+     zk3_config.vm.network "public_network", ip:'192.168.1.46'               
+     zk3_config.vm.network "forwarded_port", guest: 22, host: 2222, id:"ssh", disable:true
+     zk3_config.vm.network "forwarded_port", guest: 22, host: 2122, id:"tcp2122", disable:true
+     zk3_config.vm.network "forwarded_port", guest: 22, host: 2347, id:"ssh", auto_correct: true
+     zk3_config.vm.network "forwarded_port", guest: 22, host: 2124, id:"tcp2122", auto_correct: true
+     zk3_config.vm.network "forwarded_port", guest: 6079, host: 6083, id:"tcp6079", auto_correct: true
+     zk3_config.vm.network "forwarded_port", guest: 80, host: 6084, id:"tcp6080", auto_correct: true
+   end
+end

@@ -1,0 +1,44 @@
+
+Vagrant.configure(2) do |config|
+
+  config.vm.provider "virtualbox" do |v|
+          v.memory = 512
+          v.cpus = 1
+  end
+  
+  config.vm.define "slave1" do |slave1_config|
+     slave1_config.vm.box = "ubuntu/trusty64-juju"
+     slave1_config.vm.host_name = 'slave1'.to_s
+     slave1_config.vm.network "public_network", ip:'192.168.1.100'               
+     slave1_config.vm.network "forwarded_port", guest: 22, host: 2222, id:"ssh", disable:true
+     slave1_config.vm.network "forwarded_port", guest: 22, host: 2122, id:"tcp2122", disable:true
+     slave1_config.vm.network "forwarded_port", guest: 22, host: 2400, id:"ssh", auto_correct: true
+     slave1_config.vm.network "forwarded_port", guest: 22, host: 2155, id:"tcp2122", auto_correct:true
+     slave1_config.vm.network "forwarded_port", guest: 6079, host: 6090, id:"tcp6079", auto_correct: true
+     slave1_config.vm.network "forwarded_port", guest: 80, host: 6091, id:"tcp6080", auto_correct: true
+  end
+  
+  config.vm.define "slave2" do |slave2_config|
+     slave2_config.vm.box = "ubuntu/trusty64-juju"
+     slave2_config.vm.host_name = 'slave2'.to_s
+     slave2_config.vm.network "public_network", ip:'192.168.1.101'               
+     slave2_config.vm.network "forwarded_port", guest: 22, host: 2222, id:"ssh", disable:true
+     slave2_config.vm.network "forwarded_port", guest: 22, host: 2122, id:"tcp2122", disable:true
+     slave2_config.vm.network "forwarded_port", guest: 22, host: 2401, id:"ssh", auto_correct: true
+     slave2_config.vm.network "forwarded_port", guest: 22, host: 2156, id:"tcp2122", auto_correct: true
+     slave2_config.vm.network "forwarded_port", guest: 6079, host: 6092, id:"tcp6079", auto_correct: true
+     slave2_config.vm.network "forwarded_port", guest: 80, host: 6093, id:"tcp6080", auto_correct: true
+   end
+   
+  config.vm.define "slave3" do |slave3_config|
+     slave3_config.vm.box = "ubuntu/trusty64-juju"
+     slave3_config.vm.host_name = 'slave3'.to_s
+     slave3_config.vm.network "public_network", ip:'192.168.1.102'               
+     slave3_config.vm.network "forwarded_port", guest: 22, host: 2222, id:"ssh", disable:true
+     slave3_config.vm.network "forwarded_port", guest: 22, host: 2122, id:"tcp2122", disable:true
+     slave3_config.vm.network "forwarded_port", guest: 22, host: 2402, id:"ssh", auto_correct: true
+     slave3_config.vm.network "forwarded_port", guest: 22, host: 2157, id:"tcp2122", auto_correct: true
+     slave3_config.vm.network "forwarded_port", guest: 6079, host: 6094, id:"tcp6079", auto_correct: true
+     slave3_config.vm.network "forwarded_port", guest: 80, host: 6095, id:"tcp6080", auto_correct: true
+   end
+end
