@@ -1,0 +1,59 @@
+boxes = [
+    {
+        :name => "masterzk1",
+        :eth1 => "192.168.1.44",
+        :mem => "1024",
+        :cpu => "1",
+        :ssh_port => 2345,
+        :tcp2122_port => 2122,
+        :tcp6079_port => 6079,
+        :tcp6080_port => 6080,
+        :zk_id => 1
+    },
+    {
+        :name => "masterzk2",
+        :eth1 => "192.168.1.45",
+        :mem => "1024",
+        :cpu => "1",
+        :ssh_port => 2346,
+        :tcp2122_port => 2123,
+        :tcp6079_port => 6081,
+        :tcp6080_port => 6082,
+        :zk_id => 2
+    },
+    {
+        :name => "masterzk3",
+        :eth1 => "192.168.1.46",
+        :mem => "1024",
+        :cpu => "1",
+        :ssh_port => 2347,
+        :tcp2122_port => 2124,
+        :tcp6079_port => 6083,
+        :tcp6080_port => 6084,
+        :zk_id => 3
+    }
+]
+
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "ubuntu/trusty64-juju"
+  boxes.each do |opts|
+      config.vm.define opts[:name] do |config|
+        config.vm.hostname = opts[:name]
+  
+        config.vm.provider "virtualbox" do |v|
+          v.customize ["modifyvm", :id, "--memory", opts[:mem]]
+          v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
+        end
+  
+        config.vm.network "public_network", ip: opts[:eth1]
+        config.vm.network "forwarded_port", guest: 22, host: 2222, id:"ssh", disable:true
+	config.vm.network "forwarded_port", guest: 22, host: 2122, id:"tcp2122", disable:true
+	config.vm.network "forwarded_port", guest: 6079, host: opts[:tcp6079_port], id:"tcp6079", disable:true
+	config.vm.network "forwarded_port", guest: 80, host: opts[:tcp6080_port], id:"tcp6080", disable:true
+	config.vm.network "forwarded_port", guest: 22, host: opts[:ssh_port], id:"ssh", auto_correct: true
+        config.vm.network "forwarded_port", guest: 22, host: opts[:tcp2122_port], id:"tcp2122", auto_correct:true
+        config.vm.provision "shell", path: "mesos_provision.sh", :args => "#{opts[:eth1]} #{opts[:zk_id]}"
+      end
+  end  
+end
